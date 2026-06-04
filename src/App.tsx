@@ -1,17 +1,24 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Button } from '@mui/material';
+import { Button, ThemeProvider } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { AddShoppingCart } from '@mui/icons-material';
+import Navbar from './Customer/Components/Navbar';
+import customTheme from './Theme/CustomTheme';
 
 function App() {
   return (
-    <div className="p-20">
 
-      <h1 className='font-bold text-5xl'>Jaydeep</h1>
-      
-      <Button variant='contained'> Sahu </Button>
-      
-    </div>
+
+    <ThemeProvider theme={customTheme}>
+
+      <div>
+        <Navbar />
+      </div>
+
+    </ThemeProvider>
+
   );
 }
 
