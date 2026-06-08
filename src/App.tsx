@@ -1,27 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Button, ThemeProvider } from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AddShoppingCart } from '@mui/icons-material';
+import { ThemeProvider } from '@mui/material';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import Navbar from './Customer/Components/Navbar';
 import customTheme from './Theme/CustomTheme';
 import Home from './Customer/Pages/Home/Home';
+import Product from './Customer/Pages/Product/Product';
 
 function App() {
   return (
-
-
     <ThemeProvider theme={customTheme}>
-
-      <div>
+      <BrowserRouter>
         <Navbar />
-        <Home/>
-
-      </div>
-
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Product />} />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
-
   );
 }
 
