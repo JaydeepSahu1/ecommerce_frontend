@@ -6,6 +6,9 @@ import Navbar from './Customer/Components/Navbar';
 import customTheme from './Theme/CustomTheme';
 import Home from './Customer/Pages/Home/Home';
 import Product from './Customer/Pages/Product/Product';
+import { ProductDetails } from './Customer/Pages/Product Details/ProductDetails';
+import Review from './Customer/Pages/Reviews/Review';
+import Cart from './Customer/Pages/Cart/Cart';
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Product />} />
+           <Route path="/productdetails" element={<ProductDetails />} />
+            <Route path="/review" element={<Review />} />
+            <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
