@@ -9,6 +9,7 @@ import Product from './Customer/Pages/Product/Product';
 import { ProductDetails } from './Customer/Pages/Product Details/ProductDetails';
 import Review from './Customer/Pages/Reviews/Review';
 import Cart from './Customer/Pages/Cart/Cart';
+import Checkout from './Customer/Pages/CheckOut/Checkout';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
            <Route path="/productdetails" element={<ProductDetails />} />
             <Route path="/review" element={<Review />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
