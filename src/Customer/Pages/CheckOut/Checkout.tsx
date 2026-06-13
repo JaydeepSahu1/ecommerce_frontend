@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import AddressCard from './AddressCard'
 import AddressForm from './AddressForm';
 import PricingCard from '../Cart/PricingCard';
+import { useNavigate } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -40,6 +41,8 @@ const Checkout = () => {
     {
         setPaymentGateway(event.target.value);
     };
+
+    const navigate=useNavigate();
 
     return (
         <div>
@@ -116,7 +119,9 @@ const Checkout = () => {
                             <PricingCard />
 
                             <div className='p-3'>
-                                <Button fullWidth variant='contained' sx={{ py: "11px" }}>
+                                <Button 
+                                // onClick={()=>navigate()}
+                                fullWidth variant='contained' sx={{ py: "11px" }}>
                                     Check Out
                                 </Button>
                             </div>

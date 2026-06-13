@@ -1,20 +1,22 @@
 import { Divider } from '@mui/material'
 import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Orders from './Orders';
 import OrderDetail from './OrderDetail';
+import UserDetail from './UserDetail';
+import Address from './Address';
 
 const menu = [
-  { name: "Orders", path: "/acccount/orders" },
-  { name: "Profile", path: "/account/profile" },
-  { name: "Saved carts", path: "account/cart" },
-  { name: "Addresses", path: "account/address" },
+  { name: "Orders", path: "/account/orders" },
+  { name: "Profile", path: "/account" },
+  { name: "Saved cards", path: "/account/saved-card" },
+  { name: "Addresses", path: "/account/addresses" },
   { name: "Logout", path: "/" }
 ]
 
 const Account = () => {
-  const navigate=useNavigate();
 
+  const navigate=useNavigate();
   const location = useLocation();
 
   const handleClick=(item:any)=>navigate(item.path);
@@ -43,8 +45,14 @@ const Account = () => {
         </section>
 
         <section className='right lg:col-span-2 lg:pl-5 py-5'>
-          {/* <Orders/> */}
-        <OrderDetail/>
+          <Routes>
+            <Route path='/' element={<UserDetail/>}/>
+            <Route path='/orders' element={<Orders/>}/>
+            <Route path='/orders/:orderId/:orderItemId' element={<OrderDetail/>}/>
+            <Route path='/addresses' element={<Address/>}/>
+
+          </Routes>
+        
         </section>
 
       </div>

@@ -8,12 +8,15 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CategorySheet from './CategorySheet';
 import zIndex from '@mui/material/styles/zIndex';
 import { mainCategory } from '../../Data/Category/maincatergory';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const theme = useTheme();
     const isLarge = useMediaQuery(theme.breakpoints.up("lg"))
     const [selectedCategory, setSelectedCategory] = useState("men");
     const [showCategorySheet, setShowCategorySheet] = useState(false);
+
+    const navigate=useNavigate();
 
     return (
         <>
@@ -27,8 +30,9 @@ const Navbar = () => {
                             {!isLarge && <IconButton>
                                 <MenuOpenIcon />
                             </IconButton>}
-                            <h1 className='logo cursor-pointer text-lg md:text-2xl text-primary-color'>
-                                Mamta Bazar
+                            <h1 onClick={()=>navigate("/")}
+                             className='logo cursor-pointer text-lg md:text-2xl text-primary-color'>
+                                Shani Bazzar
                             </h1>
                         </div>
 
@@ -53,7 +57,9 @@ const Navbar = () => {
                         </IconButton>
 
                         {
-                            true ? <Button className='flex item-center gap-2'>
+                            true ? <Button 
+                            onClick={()=>navigate("/account")}
+                            className='flex item-center gap-2'>
                                 <Avatar
                                     sx={{ width: 29, height: 29 }}
                                     src='https://img.freepik.com/premium-vector/man-character_665280-46970.jpg' />
@@ -65,11 +71,14 @@ const Navbar = () => {
                         <IconButton>
                             <FavoriteBorder sx={{ fontSize: 29 }} />
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={()=>navigate("/cart")}>
                             <AddShoppingCart className='text-gray-700' sx={{ fontSize: 29 }} />
                         </IconButton>
                         {
-                            isLarge && <Button startIcon={<Storefront />} variant='outlined'>
+                            isLarge && 
+                            <Button 
+                            onClick={()=>navigate("/become-seller")}
+                            startIcon={<Storefront />} variant='outlined'>
                                 Become Seller
                             </Button>
                         }

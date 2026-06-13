@@ -83,7 +83,7 @@ const OrderDetail = () => {
                         { false ? "Order canceled":"Cancel Order"}
                     </Button>
                 </div>
-
+    
             </div>
 
         </Box>
