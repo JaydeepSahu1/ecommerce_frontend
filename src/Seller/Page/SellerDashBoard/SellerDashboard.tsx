@@ -1,16 +1,23 @@
 import React from 'react'
+import SellerDrawerList from '../../Components/SellerDrawerList'
+import SellerRoutes from '../../../Routes/SellerRoutes'
 
 const SellerDashboard = () => {
+
+  const toggleDrawer = () => { }
+
   return (
     <div className='lg:flex lg:h-[90vh]'>
-        <section className='hidden lg:block h-full'>
+      <section className='hidden lg:block h-full'>
 
-            SellerDrawerList
-        </section>
-        <section className='p-10 w-full lg:w-[80%] overflow-y-auto'>
-            seller routes
+        <SellerDrawerList toggleDrawer={toggleDrawer} />
 
-        </section>
+      </section>
+      <section className='p-10 w-full lg:w-[80%] overflow-y-auto'>
+        
+        <SellerRoutes/>
+
+      </section>
 
     </div>
   )
