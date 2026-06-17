@@ -13,6 +13,7 @@ import Account from './Customer/Pages/Account/Account';
 import Checkout from './Customer/Pages/CheckOut/Checkout';
 import BecomeSeller from './Customer/Pages/Become Seller/BecomeSeller';
 import SellerDashboard from './Seller/Page/SellerDashBoard/SellerDashboard';
+import AdminDashBoard from './Admin/Pages/DashBoard/AdminDashBoard';
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
         <Route path="/become-seller" element={<BecomeSeller />} />
 
         <Route path="/seller/*" element={<SellerDashboard />} />
+        
+        <Route path="/admin/*" element= {<AdminDashBoard />} />
 
       </Routes>
 

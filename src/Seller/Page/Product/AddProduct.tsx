@@ -166,7 +166,7 @@ const AddProductForm = () => {
               }
               required
             />
-          </Grid>v   
+          </Grid> 
 
           <Grid size={{ xs: 12, md: 4, lg: 4 }}>
             <TextField
@@ -389,7 +389,7 @@ const AddProductForm = () => {
               {formik.isSubmitting ? (
                 <CircularProgress size={20} color="inherit" />
               ) : (
-                "Submit"
+                "Add Product"
               )}
             </Button>
           </Grid>
