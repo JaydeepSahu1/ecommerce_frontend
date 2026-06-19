@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 
@@ -14,8 +14,18 @@ import Checkout from './Customer/Pages/CheckOut/Checkout';
 import BecomeSeller from './Customer/Pages/Become Seller/BecomeSeller';
 import SellerDashboard from './Seller/Page/SellerDashBoard/SellerDashboard';
 import AdminDashBoard from './Admin/Pages/DashBoard/AdminDashBoard';
+import { useAppDispatch } from './State/Store';
+import { fetchSellerProfile } from './State/Seller/sellerSlice';
+
 
 function App() {
+
+  const dispatch=useAppDispatch();
+
+  useEffect(()=> {
+    dispatch(fetchSellerProfile(localStorage.getItem("jwt")||""))
+  },[])
+  
   return (
     <ThemeProvider theme={customTheme}>
 
