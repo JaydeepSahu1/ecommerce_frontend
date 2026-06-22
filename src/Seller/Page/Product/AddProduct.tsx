@@ -14,6 +14,8 @@ import { homeKitchenLevelThree } from '../../../Data/Category/LevelThree/Home&Ki
 import Grid from '@mui/material/Grid'
 import { colors } from '../../../Data/Filter/color'
 import { mainCategory } from '../../../Data/Category/maincatergory'
+import { useAppDispatch } from '../../../State/Store'
+import { createProduct } from '../../../State/Seller/sellerProductSlice'
 
 const categoryTwo: { [key: string]: any[] } = {
   men: menLevelTwo,
@@ -33,9 +35,14 @@ const categoryThree: { [key: string]: any[] } = {
   electronics: electronicsLevelThree,
 }
 
+const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+
+
 const AddProductForm = () => {
   const [uploadImage, setUploadingImage] = useState(false)
   const [snackbarOpen, setOpenSnackbar] = useState(false)
+
+  const dispatch = useAppDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -52,7 +59,8 @@ const AddProductForm = () => {
       sizes: '',
     },
     onSubmit: (values) => {
-      console.log(values)
+      console.log(values);
+      dispatch(createProduct({ request: values, jwt: localStorage.getItem("jwt") }))
     },
   })
 
@@ -166,9 +174,9 @@ const AddProductForm = () => {
               }
               required
             />
-          </Grid> 
+          </Grid>
 
-          <Grid size={{ xs: 12, md: 4, lg: 4 }}>
+          <Grid size={{ xs: 12, md: 3, lg: 4 }}>
             <TextField
               fullWidth
               id='mrp_price'
@@ -183,7 +191,7 @@ const AddProductForm = () => {
             />
           </Grid>
 
-          <Grid size={{ xs: 12, md: 4, lg: 4 }}>
+          <Grid size={{ xs: 12, md: 3, lg: 4 }}>
             <TextField
               fullWidth
               id='selling_price'
@@ -198,7 +206,7 @@ const AddProductForm = () => {
             />
           </Grid>
 
-          <Grid size={{ xs: 12, md: 4, lg: 4 }}>
+          <Grid size={{ xs: 12, md: 3, lg: 4 }}>
             <FormControl
               fullWidth
               error={formik.touched.color && Boolean(formik.errors.color)}
@@ -232,7 +240,41 @@ const AddProductForm = () => {
             </FormControl>
           </Grid>
 
-          
+          <Grid size={{ xs: 12, md: 3, lg: 4 }}>
+            <FormControl
+              fullWidth
+              error={formik.touched.sizes && Boolean(formik.errors.sizes)}
+              required
+            >
+              <InputLabel >Sizes</InputLabel>
+              <Select
+                labelId="sizes-label"
+                id="sizes"
+                name="sizes"
+                value={formik.values.sizes}
+                onChange={formik.handleChange}
+                label="Sizes"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+
+                {sizes.map((size) => (
+                  <MenuItem key={size} value={size}>
+                    <div className="flex gap-3">
+                      <p>{size}</p>
+                    </div>
+                  </MenuItem>
+                ))}
+              </Select>
+              {formik.touched.sizes && formik.errors.sizes && (
+                <FormHelperText>{formik.errors.sizes}</FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
+
+
+
 
           {/* Main Category */}
           <Grid size={{ xs: 12, md: 4, lg: 4 }}>
@@ -393,13 +435,6 @@ const AddProductForm = () => {
               )}
             </Button>
           </Grid>
-
-
-
-
-
-
-
 
 
         </Grid>

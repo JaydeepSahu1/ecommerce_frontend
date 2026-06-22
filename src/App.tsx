@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import Navbar from './Customer/Components/Navbar';
 import customTheme from './Theme/CustomTheme';
@@ -14,17 +14,25 @@ import Checkout from './Customer/Pages/CheckOut/Checkout';
 import BecomeSeller from './Customer/Pages/Become Seller/BecomeSeller';
 import SellerDashboard from './Seller/Page/SellerDashBoard/SellerDashboard';
 import AdminDashBoard from './Admin/Pages/DashBoard/AdminDashBoard';
-import { useAppDispatch } from './State/Store';
+import { useAppDispatch, useAppSelector } from './State/Store';
 import { fetchSellerProfile } from './State/Seller/sellerSlice';
 
 
 function App() {
 
   const dispatch=useAppDispatch();
+  const {seller} =useAppSelector(store=>store)
+  const navigate=useNavigate()
 
   useEffect(()=> {
     dispatch(fetchSellerProfile(localStorage.getItem("jwt")||""))
   },[])
+
+  useEffect(()=>{
+    if(seller.profile){
+      navigate("/seller")
+    }
+  },[seller.profile])
   
   return (
     <ThemeProvider theme={customTheme}>

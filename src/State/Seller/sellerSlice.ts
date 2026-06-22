@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../Config/Api";
 
 export const fetchSellerProfile = createAsyncThunk(
@@ -7,14 +7,56 @@ export const fetchSellerProfile = createAsyncThunk(
     try {
       const response = await api.get("/sellers/profile", {
         headers: {
-          Authorization: `Bearer ${jwt}`, 
+          Authorization: `Bearer ${jwt}`,
         },
       });
       console.log("fetch seller profile", response.data);
       return response.data;
-    } catch (error: any) {
+    }
+    catch (error: any) {
       console.log("error ---", error);
       return rejectWithValue(error.response?.data || "Something went wrong");
     }
   }
 );
+
+interface SellerState {
+  sellers: any[];
+  selectedSeller: any;
+  profile: any;
+  report: any;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: SellerState = {
+  sellers: [],
+  selectedSeller: null,
+  profile: null,
+  report: null,
+  loading: false,
+  error: null,
+};
+
+const sellerSlice = createSlice({
+  name: "sellers",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchSellerProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSellerProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile = action.payload;
+      })
+      .addCase(fetchSellerProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
+
+export default sellerSlice.reducer;

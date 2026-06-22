@@ -26,3 +26,14 @@ export const signin = createAsyncThunk(
     }
   }
 );
+
+
+// export const logout=createAsyncThunk("/auth/logout",
+//   async(_,{rejectWithValue})=>{
+//     try {
+//       const response =await api.post
+//     } catch (error) {
+      
+//     }
+//   }
+// )  
