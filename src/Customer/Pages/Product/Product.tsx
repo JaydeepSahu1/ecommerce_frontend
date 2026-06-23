@@ -1,8 +1,11 @@
 import { Filter, FilterAlt } from '@mui/icons-material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FilterSection from './FilterSection'
 import ProductCard from './ProductCard'
 import { Box, Divider, FormControl, IconButton, InputLabel, MenuItem, Pagination, Select, useMediaQuery, useTheme } from '@mui/material'
+import { useAppDispatch, useAppSelector } from '../../../State/Store'
+import { fetchAllProduct } from '../../../State/Customer/ProductSlice'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 
 const Product = () => {
@@ -13,6 +16,12 @@ const Product = () => {
   const [sort, setSort] = useState();
   const [page, setPage] = useState(1);
 
+  const dispatch=useAppDispatch();
+
+  const [searchParams ,setSearchParams] = useSearchParams()
+  const{categoryId} = useParams();
+  const{product} = useAppSelector((store=>store));
+
   const handleSortChange = (event: any) => {
     setSort(event.target.value)
   }
@@ -20,6 +29,32 @@ const Product = () => {
   const handlePageChange = (value: number) => {
     setPage(value)
   }
+
+  useEffect(() => {
+  const [minPrice, maxPrice] = searchParams.get("price")?.split("-") || [];
+  const color = searchParams.get("color");
+  const minDiscount = searchParams.get("discount")
+    ? Number(searchParams.get("discount"))
+    : undefined;
+  const pageNumber = page - 1;
+
+  const newFilter = {
+  category: categoryId, // ✅ match backend param name
+  color: color || "",
+  minPrice: minPrice ? Number(minPrice) : undefined,
+  maxPrice: maxPrice ? Number(maxPrice) : undefined,
+  minDiscount,
+  pageNumber,
+  sort,
+};
+
+dispatch(fetchAllProduct(newFilter));
+
+  console.log("Filter being dispatched:", newFilter);
+
+  dispatch(fetchAllProduct(newFilter));
+}, [categoryId, searchParams, page, sort]);
+
 
   return (
     <div className='-z-10 mt-10'>
@@ -80,7 +115,7 @@ const Product = () => {
           <section className="products_section grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
           gap-y-5 px-5 justify-center">
 
-            {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((item) => <ProductCard />)}
+            {product.products.map((item) => <ProductCard item={item}/>)}
           
 
           </section>

@@ -20,20 +20,20 @@ import { fetchSellerProfile } from './State/Seller/sellerSlice';
 
 function App() {
 
-  const dispatch=useAppDispatch();
-  const {seller} =useAppSelector(store=>store)
-  const navigate=useNavigate()
+  const dispatch = useAppDispatch();
+  const { seller } = useAppSelector(store => store)
+  const navigate = useNavigate()
 
-  useEffect(()=> {
-    dispatch(fetchSellerProfile(localStorage.getItem("jwt")||""))
-  },[])
+  useEffect(() => {
+    dispatch(fetchSellerProfile(localStorage.getItem("jwt") || ""))
+  }, [])
 
-  useEffect(()=>{
-    if(seller.profile){
+  useEffect(() => {
+    if (seller.profile) {
       navigate("/seller")
     }
-  },[seller.profile])
-  
+  }, [seller.profile])
+
   return (
     <ThemeProvider theme={customTheme}>
 
@@ -43,7 +43,7 @@ function App() {
 
         <Route path="/" element={<Home />} />
         <Route path="/products/:category" element={<Product />} />
-        <Route path="/product-detail/:categoryID/:name/:productId" element={<ProductDetails />} />
+        <Route path="/product-details/:categoryId/:title/:id" element={<ProductDetails />}/>
         <Route path="/review/:productId" element={<Review />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -51,8 +51,8 @@ function App() {
         <Route path="/become-seller" element={<BecomeSeller />} />
 
         <Route path="/seller/*" element={<SellerDashboard />} />
-        
-        <Route path="/admin/*" element= {<AdminDashBoard />} />
+
+        <Route path="/admin/*" element={<AdminDashBoard />} />
 
       </Routes>
 

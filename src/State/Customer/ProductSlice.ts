@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { api } from "../../Config/Api";
 import { Product } from "../../Types/ProductTypes";
 
-const API_URL = "http://localhost:5454"
+const API_URL = "/products"
 
 export const fetchProductById = createAsyncThunk("products/fetchProductById",
     async (productId, { rejectWithValue }) => {
@@ -12,7 +12,7 @@ export const fetchProductById = createAsyncThunk("products/fetchProductById",
 
 
             const data = response.data
-            console.log("data :" + data)
+            console.log("product detail data :" , data)
             return data
         }
         catch (error: any) {
@@ -23,7 +23,7 @@ export const fetchProductById = createAsyncThunk("products/fetchProductById",
 )
 
 
-export const searchProduct = createAsyncThunk("products/searchProduct",
+export const searchProduct = createAsyncThunk<any,any>("products/searchProduct",
     async (query, { rejectWithValue }) => {
         try {
             const response = await api.get(`${API_URL}/search`,
@@ -34,9 +34,8 @@ export const searchProduct = createAsyncThunk("products/searchProduct",
                 }
             );
 
-
             const data = response.data
-            console.log("search product data :" + data)
+            console.log("search product data :" , data)
             return data
         }
         catch (error: any) {
@@ -46,31 +45,32 @@ export const searchProduct = createAsyncThunk("products/searchProduct",
     }
 )
 
-export const fetchAllProduct = createAsyncThunk<any,any>("products/fetchAllProduct",
-    async (params, { rejectWithValue }) => {
+export const fetchAllProduct = createAsyncThunk<any, any>(
+  "products/fetchAllProduct",
+  async (params, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`${API_URL}`, {
+        params: {
+          ...params,
+          pageNumber: params.pageNumber || 0,
+        },
+      });
 
+      const data = response.data;
+      console.log("all product data :", data);
 
-
-        try {
-            const response = await api.get(`${API_URL}`, {
-                params: {
-                    ...params,
-                    pageNumber: params.pageNumber || 0
-                }
-            });
-
-
-
-            const data = response.data
-            console.log("all product data :" + data)
-            return data
-        }
-        catch (error: any) {
-            console.log("error: " + error)
-            return rejectWithValue(error.message)
-        }
+      // Extract content + totalPages from Page<Product>
+      return {
+        products: data.content,
+        totalPages: data.totalPages,
+      };
+    } catch (error: any) {
+      console.log("error: " + error);
+      return rejectWithValue(error.message);
     }
-)
+  }
+);
+
 
  interface ProductState{
     product:Product | null;
@@ -113,7 +113,8 @@ export const fetchAllProduct = createAsyncThunk<any,any>("products/fetchAllProdu
         })
         builder.addCase(fetchAllProduct.fulfilled,(state,action)=>{
             state.loading = false;
-            state.products = action.payload;
+            state.products = action.payload.products;
+             state.totalPages = action.payload.totalPages;
         })
         builder.addCase(fetchAllProduct.rejected,(state,action)=>{
             state.loading=false;

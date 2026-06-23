@@ -6,7 +6,7 @@ export interface Product{
     description:string;
     mrpPrice:number;
     sellingPrice:number;
-    discountPercentae:number;
+    discountPercentage:number;
     quantity:number;
     color:string;
     images:string[];

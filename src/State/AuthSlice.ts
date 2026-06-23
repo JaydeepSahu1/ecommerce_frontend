@@ -28,12 +28,16 @@ export const signin = createAsyncThunk(
 );
 
 
-// export const logout=createAsyncThunk("/auth/logout",
-//   async(_,{rejectWithValue})=>{
-//     try {
-//       const response =await api.post
-//     } catch (error) {
-      
-//     }
-//   }
-// )  
+export const logout=createAsyncThunk<any,any>("/auth/logout",
+  async(navigate,{rejectWithValue})=>{
+    try {
+      localStorage.clear()
+      console.log("logout sucess")
+      navigate("/")
+    } catch (error) {
+      console.log("error - - -",error )
+    }
+  }
+)  
+
+

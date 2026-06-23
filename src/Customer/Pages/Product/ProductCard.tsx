@@ -3,21 +3,22 @@ import "./Productcard.css"
 import { Button } from '@mui/material'
 import { Favorite, ModeComment } from '@mui/icons-material'
 import { teal } from '@mui/material/colors'
+import { Product } from '../../../Types/ProductTypes'
+import { useNavigate } from 'react-router-dom'
 
 
-const images = ["https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSjkTN65Vf9dSCZNKG06m-4TsuTeutwGlq6bV6l80_eJlh8TNcQjiqvFA0PKPZrx3zPjW5QKjNZX4gcSjBjP1rm7SW5DUxY-7Xm7dQzmuO6X41etUBcuIkMcDYZAwVGV_uoA7yHEoZP&usqp=CAc",
-  "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCQAIKA8y4k9k_JpJ6lGQR5DCIgGFj8evztPbz4bbDSRqGwl_LFA3r1OFS81vf7yjy36cA9F7kugmVzUkAVYYhe0mcwpAc1o9yv2pWTSLtZJssicUmQgfGraKuy4AmBbp9RWs5rx03&usqp=CAc"]
 
-const ProductCard = () => {
+const ProductCard = ({ item }: { item: Product }) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [isHovered, setIsHovered] = useState(false);
+  const navigate=useNavigate();
 
   useEffect(() => {
 
     let interval: any;
     if (isHovered) {
       interval = setInterval(() => {
-        setCurrentImage((prevImage) => (prevImage + 1) % images.length);
+        setCurrentImage((prevImage) => (prevImage + 1) % item.images.length);
       }, 1000);
     }
     else if (interval) {
@@ -29,14 +30,14 @@ const ProductCard = () => {
 
   return (
     <>
-      <div className='group px-4 relative'>
+      <div onClick={()=>navigate(`/product-details/${item.category?.categoryId}/${item.title}/${item.id}`)} className='group px-4 relative'>
 
         <div className='card'
 
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          {images.map((item, index) =>
+          {item.images.map((item, index) =>
             <img
               className='card-media object-top'
               src={item}
@@ -45,7 +46,7 @@ const ProductCard = () => {
             />
           )}
 
-          { isHovered && < div className='indicator flex flex-col items-center space-y-2'>
+          {isHovered && < div className='indicator flex flex-col items-center space-y-2'>
 
             <div className='flex gap-3'>
               <Button variant='contained' color='secondary'>
@@ -62,23 +63,23 @@ const ProductCard = () => {
 
           }
         </div>
-          
+
 
         <div className='details pt-3 space-y-1 group-hover-effect rounded-md'>
           <div className='name '>
-            <h1>Nike</h1>
-            <p>Blue Shirt</p>
+            <h1>{item.seller?.businessDetails.businessName}</h1>
+            <p>{item.title}</p>
           </div>
           <div className='price flex items-center gap-3'>
 
             <span className='font-semibold text-gray-800'>
-              ₹ 400
+              ₹ {item.sellingPrice}
             </span>
             <span className='thin-line-through text-gray-400'>
-              mrp ₹ 999
+              mrp ₹ {item.mrpPrice}
             </span>
             <span className='text-primary-color font-semibold'>
-              60%
+              {item.discountPercentage}%
             </span>
           </div>
 

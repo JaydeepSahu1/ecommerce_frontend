@@ -1,15 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import { teal } from '@mui/material/colors';
 import { Button, colors, Divider } from '@mui/material';
 import { Add, AddShoppingCart, FavoriteBorder, Favorite, LocalShipping, Remove, Shield, Wallet, WorkspacePremium } from '@mui/icons-material';
 import SimilarProduct from './SimilarProduct';
 import ReviewCard from '../Reviews/ReviewCard';
+import { useAppDispatch, useAppSelector } from '../../../State/Store';
+import { useParams } from 'react-router-dom';
+import { fetchProductById } from '../../../State/Customer/ProductSlice';
 
 
 export const ProductDetails = () => {
 
   const [quantity, setQuantity] = useState(1);
+
+  const dispatch = useAppDispatch()
+  const { productId } = useParams();
+  const { product } = useAppSelector(store => store)
+  const[activeImage,setActiveImage] = useState(0)
+
+  useEffect(() => {
+  if (productId) {
+    // cast to any to satisfy thunk parameter typing
+    dispatch(fetchProductById(productId as any));
+  }
+}, [productId]);
+
+const handleActiveImage=(value:number)=>()=>{
+  setActiveImage(value)
+}
 
   return (
     <div className='px-5 lg:px-20 pt-10'>
@@ -19,8 +38,9 @@ export const ProductDetails = () => {
         <section className='flex flex-col lg:flex-row gap-5'>
 
           <div className='w-full lg:w-[15%] flex flex-wrap lg:flex-col gap-3'>
-            {[1, 1, 1, 1].map((item) => <img className='lg:w-full w-[50px] cursor-pointer rounded-md'
-              src='https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSjkTN65Vf9dSCZNKG06m-4TsuTeutwGlq6bV6l80_eJlh8TNcQjiqvFA0PKPZrx3zPjW5QKjNZX4gcSjBjP1rm7SW5DUxY-7Xm7dQzmuO6X41etUBcuIkMcDYZAwVGV_uoA7yHEoZP&usqp=CAc'
+            {product.product?.images.map((item,index) => <img onClick={handleActiveImage(index)}
+            className='lg:w-full w-[50px] cursor-pointer rounded-md'
+              src={item}
               alt='' />)}
 
 
@@ -28,7 +48,7 @@ export const ProductDetails = () => {
 
           <div className='w-full lg:w-[85%]'>
             <img className='w-full rounded-md'
-              src='https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSjkTN65Vf9dSCZNKG06m-4TsuTeutwGlq6bV6l80_eJlh8TNcQjiqvFA0PKPZrx3zPjW5QKjNZX4gcSjBjP1rm7SW5DUxY-7Xm7dQzmuO6X41etUBcuIkMcDYZAwVGV_uoA7yHEoZP&usqp=CAc '
+              src= {product.product?.images[activeImage]}
               alt='' />
 
           </div>
@@ -140,8 +160,8 @@ export const ProductDetails = () => {
           </div>
 
           <div className='mt-12 space-y-5'>
-            <ReviewCard/>
-            <Divider/>
+            <ReviewCard />
+            <Divider />
           </div>
 
         </section>
