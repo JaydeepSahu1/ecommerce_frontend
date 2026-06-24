@@ -57,7 +57,7 @@ const Navbar = () => {
                         </IconButton>
 
                         {
-                            true ? <Button 
+                            false ? <Button 
                             onClick={()=>navigate("/account")}
                             className='flex item-center gap-2'>
                                 <Avatar
@@ -66,7 +66,9 @@ const Navbar = () => {
                                 <h1 className='font-semibold hidden lg:block'>
                                     Jaydeep
                                 </h1>
-                            </Button> : <Button variant='contained'>Login</Button>
+                            </Button> : <Button
+                            onClick={()=>navigate("/login")}
+                            variant='contained'>Login</Button>
                         }
                         <IconButton>
                             <FavoriteBorder sx={{ fontSize: 29 }} />

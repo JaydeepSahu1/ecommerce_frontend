@@ -16,12 +16,14 @@ import SellerDashboard from './Seller/Page/SellerDashBoard/SellerDashboard';
 import AdminDashBoard from './Admin/Pages/DashBoard/AdminDashBoard';
 import { useAppDispatch, useAppSelector } from './State/Store';
 import { fetchSellerProfile } from './State/Seller/sellerSlice';
+import Auth from './Customer/Pages/Auth/Auth';
+import { fetchUserProfile } from './State/AuthSlice';
 
 
 function App() {
 
   const dispatch = useAppDispatch();
-  const { seller } = useAppSelector(store => store)
+  const { seller, auth } = useAppSelector(store => store)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -34,6 +36,15 @@ function App() {
     }
   }, [seller.profile])
 
+  useEffect(() => {
+    const token = auth.jwt || localStorage.getItem("jwt");
+
+    if (token) {
+      dispatch(fetchUserProfile(token));
+    }
+  }, [auth.jwt, dispatch]);
+
+
   return (
     <ThemeProvider theme={customTheme}>
 
@@ -42,8 +53,9 @@ function App() {
       <Routes>
 
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Auth />} />
         <Route path="/products/:category" element={<Product />} />
-        <Route path="/product-details/:categoryId/:title/:id" element={<ProductDetails />}/>
+        <Route path="/product-details/:categoryId/:title/:productid" element={<ProductDetails />} />
         <Route path="/review/:productId" element={<Review />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />

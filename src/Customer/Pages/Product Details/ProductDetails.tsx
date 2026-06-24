@@ -1,183 +1,245 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react';
 import StarIcon from '@mui/icons-material/Star';
 import { teal } from '@mui/material/colors';
-import { Button, colors, Divider } from '@mui/material';
-import { Add, AddShoppingCart, FavoriteBorder, Favorite, LocalShipping, Remove, Shield, Wallet, WorkspacePremium } from '@mui/icons-material';
+import { Button, Divider } from '@mui/material';
+import {
+  Add,
+  AddShoppingCart,
+  FavoriteBorder,
+  LocalShipping,
+  Remove,
+  Shield,
+  Wallet,
+  WorkspacePremium,
+} from '@mui/icons-material';
 import SimilarProduct from './SimilarProduct';
 import ReviewCard from '../Reviews/ReviewCard';
 import { useAppDispatch, useAppSelector } from '../../../State/Store';
 import { useParams } from 'react-router-dom';
 import { fetchProductById } from '../../../State/Customer/ProductSlice';
 
-
 export const ProductDetails = () => {
-
   const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
 
-  const dispatch = useAppDispatch()
-  const { productId } = useParams();
-  const { product } = useAppSelector(store => store)
-  const[activeImage,setActiveImage] = useState(0)
+  const dispatch = useAppDispatch();
+
+  const { product, loading, error } = useAppSelector((store) => store.product);
+
+  const { productid } = useParams();
+
+useEffect(() => {
+  if (productid) {
+    console.log("Fetching product with id:", productid);
+    dispatch(fetchProductById(productid));
+  }
+}, [dispatch, productid]);
 
   useEffect(() => {
-  if (productId) {
-    // cast to any to satisfy thunk parameter typing
-    dispatch(fetchProductById(productId as any));
-  }
-}, [productId]);
+    setActiveImage(0);
+    setQuantity(1);
+  }, [product]);
 
-const handleActiveImage=(value:number)=>()=>{
-  setActiveImage(value)
-}
+  const images = useMemo(() => {
+    if (!product?.images || !Array.isArray(product.images)) return [];
+    return product.images.filter(Boolean);
+  }, [product]);
+
+  const activeImageSrc =
+    images.length > 0 ? images[Math.min(activeImage, images.length - 1)] : '';
+
+  const handleActiveImage = (value: number) => () => {
+    setActiveImage(value);
+  };
+
+  const handleIncrease = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+
+  if (loading) {
+    return <p className="px-5 lg:px-20 pt-10">Loading product details...</p>;
+  }
+
+  if (error) {
+    return (
+      <p className="px-5 lg:px-20 pt-10 text-red-500">
+        Error loading product: {error}
+      </p>
+    );
+  }
+
+  if (!product) {
+    return (
+      <p className="px-5 lg:px-20 pt-10 text-gray-500">
+        Product details not found.
+      </p>
+    );
+  }
 
   return (
-    <div className='px-5 lg:px-20 pt-10'>
-
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
-
-        <section className='flex flex-col lg:flex-row gap-5'>
-
-          <div className='w-full lg:w-[15%] flex flex-wrap lg:flex-col gap-3'>
-            {product.product?.images.map((item,index) => <img onClick={handleActiveImage(index)}
-            className='lg:w-full w-[50px] cursor-pointer rounded-md'
-              src={item}
-              alt='' />)}
-
-
+    <div className="px-5 lg:px-20 pt-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* Images */}
+        <section className="flex flex-col lg:flex-row gap-5">
+          <div className="w-full lg:w-[15%] flex flex-wrap lg:flex-col gap-3">
+            {images.length > 0 ? (
+              images.map((img, index) => (
+                <img
+                  key={index}
+                  onClick={handleActiveImage(index)}
+                  className={`lg:w-full w-[60px] h-[60px] object-cover cursor-pointer rounded-md border ${
+                    activeImage === index ? 'border-blue-500' : 'border-gray-200'
+                  }`}
+                  src={img}
+                  alt={`${product?.title || 'Product'}-${index}`}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-400">No images</div>
+            )}
           </div>
 
-          <div className='w-full lg:w-[85%]'>
-            <img className='w-full rounded-md'
-              src= {product.product?.images[activeImage]}
-              alt='' />
-
+          <div className="w-full lg:w-[85%]">
+            {activeImageSrc ? (
+              <img
+                className="w-full max-h-[500px] object-contain rounded-md border"
+                src={activeImageSrc}
+                alt={product?.title || 'Product'}
+              />
+            ) : (
+              <div className="w-full h-[350px] rounded-md border flex items-center justify-center text-gray-400">
+                No product image available
+              </div>
+            )}
           </div>
-
         </section>
 
+        {/* Details */}
         <section>
-          <h1 className='font-bold text-lg text-primary-color'>
-            RAM Clothing
+          <h1 className="font-bold text-lg text-primary-color">
+            {product?.seller?.businessDetails?.businessName || 'Seller'}
           </h1>
-          <p className='text-gray-500 font-semibold'>
-            Men Blue T-Shirt
-          </p>
-          <div className='flex justify-between items-center py-2 border w-[180px] px-3 mt-5'>
-            <div className='flex gap-1 items-center'>
-              <span>4</span>
-              <StarIcon sx={{ color: teal[500], fontSize: "17px" }} />
 
+          <p className="text-gray-700 font-semibold text-xl mt-1">
+            {product?.title || 'Product Title'}
+          </p>
+
+          {/* Ratings */}
+          <div className="flex justify-between items-center py-2 border w-[190px] px-3 mt-5 rounded-md">
+            <div className="flex gap-1 items-center">
+              <span>{product?.numRating ?? 0}</span>
+              <StarIcon sx={{ color: teal[500], fontSize: '17px' }} />
             </div>
-            <Divider orientation='vertical' flexItem />
-            <span>234 Ratings</span>
+            <Divider orientation="vertical" flexItem />
+            <span>{product?.numRating ?? 0} Ratings</span>
           </div>
 
-          <div>
-            <div className='price flex items-center gap-3 mt-5 text-2xl'>
+          {/* Price */}
+          <div className="mt-5">
+            <div className="price flex items-center gap-3 text-2xl flex-wrap">
+              <span className="font-semibold text-gray-800">
+                ₹ {product?.sellingPrice ?? 0}
+              </span>
 
-              <span className='font-semibold text-gray-800'>
-                ₹ 400
-              </span>
-              <span className='line-through text-gray-400'>
-                mrp ₹ 999
-              </span>
-              <span className='text-primary-color font-semibold'>
-                60% Off
-              </span>
+              {product?.mrpPrice && (
+                <span className="line-through text-gray-400">
+                  ₹ {product.mrpPrice}
+                </span>
+              )}
+
+              {product?.discountPercentage ? (
+                <span className="text-primary-color font-semibold">
+                  {product.discountPercentage}% Off
+                </span>
+              ) : null}
             </div>
 
-            <p className='text-sm'>
+            <p className="text-sm text-gray-600 mt-1">
               Inclusive of all taxes. Free Shipping above 1500.
             </p>
           </div>
 
-          <div className='mt-7 space-y-3'>
-
-            <div className='flex items-center gap-4'>
+          {/* Guarantees */}
+          <div className="mt-7 space-y-3">
+            <div className="flex items-center gap-4">
               <Shield sx={{ color: teal[500] }} />
               <p>Authentic & Quality Assured</p>
             </div>
-
-            <div className='flex items-center gap-4'>
+            <div className="flex items-center gap-4">
               <WorkspacePremium sx={{ color: teal[500] }} />
-              <p>100% money back gaurantee</p>
+              <p>100% money back guarantee</p>
             </div>
-
-            <div className='flex items-center gap-4'>
+            <div className="flex items-center gap-4">
               <LocalShipping sx={{ color: teal[500] }} />
               <p>Free Shipping & Return</p>
             </div>
-
-            <div className='flex items-center gap-4'>
+            <div className="flex items-center gap-4">
               <Wallet sx={{ color: teal[500] }} />
-              <p>Cash on Delivery Avilable</p>
+              <p>Cash on Delivery Available</p>
             </div>
-
           </div>
 
-          <div className='mt-7 space-y-2'>
-
-            <h1>Quantity</h1>
-
-            <div className='flex items-center gap-2 w-[140px] justify-between'>
-
-              <Button disabled={quantity == 1}
-                onClick={() => setQuantity(quantity - 1)}>
+          {/* Quantity */}
+          <div className="mt-7 space-y-2">
+            <h1 className="font-medium">Quantity</h1>
+            <div className="flex items-center gap-2 w-[140px] justify-between border rounded-md px-2 py-1">
+              <Button disabled={quantity === 1} onClick={handleDecrease}>
                 <Remove />
               </Button>
-              <span>
-                {quantity}
-              </span>
-              <Button onClick={() => setQuantity(quantity + 1)}>
+              <span>{quantity}</span>
+              <Button onClick={handleIncrease}>
                 <Add />
               </Button>
             </div>
-
           </div>
 
-          <div className='mt-12 flex items-center gap-5 '>
-
+          {/* Actions */}
+          <div className="mt-12 flex flex-col sm:flex-row items-center gap-5">
             <Button
               fullWidth
-              variant='contained'
+              variant="contained"
               startIcon={<AddShoppingCart />}
-              sx={{ py: "1rem" }}>
+              sx={{ py: '1rem' }}
+            >
               Add to Cart
             </Button>
-
             <Button
               fullWidth
-              variant='outlined'
+              variant="outlined"
               startIcon={<FavoriteBorder />}
-              sx={{ py: "1rem" }}>
+              sx={{ py: '1rem' }}
+            >
               Add to WishList
             </Button>
           </div>
 
-          <div className='mt-5'>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente distinctio tempore, ullam fuga qui sed ratione debitis, asperiores adipisci quasi consequatur reprehenderit provident et odio magni itaque accusantium, earum ab. Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Libero nam, officiis veniam consequuntur eius quaerat maxime sequi cupiditate earum odio dolorem, sed similique. Saepe modi laudantium necessitatibus, vero labore placeat.</p>
+          {/* Description */}
+          <div className="mt-5">
+            <h2 className="font-semibold mb-2">Description</h2>
+            <p className="text-gray-700">
+              {product?.description || 'No description available.'}
+            </p>
           </div>
 
-          <div className='mt-12 space-y-5'>
+          {/* Reviews */}
+          <div className="mt-12 space-y-5">
             <ReviewCard />
             <Divider />
           </div>
-
         </section>
-
       </div>
 
-
-      <div className='mt-20'>
-        <h1 className='text-lg font-bold flex justify-center'>
-          Similar Products
-        </h1>
-        <div className='pt-5'>
+      {/* Similar Products */}
+      <div className="mt-20">
+        <h1 className="text-lg font-bold flex justify-center">Similar Products</h1>
+        <div className="pt-5">
           <SimilarProduct />
         </div>
       </div>
-
-    </div >
-  )
-}
+    </div>
+  );
+};
