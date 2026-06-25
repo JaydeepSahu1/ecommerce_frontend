@@ -1,8 +1,9 @@
 import { Add, AddAPhoto, Close, Remove } from '@mui/icons-material'
 import { Button, Divider, IconButton } from '@mui/material'
 import React from 'react'
+import { CarItem } from '../../../Types/CartTypes'
 
-const CartItem = () => {
+const CartItemCard = ({item}:{item:CarItem}) => {
 
     const handleUpdateQuantity = () => {
 
@@ -15,7 +16,7 @@ const CartItem = () => {
 
                 <div>
                     <img className='w-[90px] rounded-md'
-                        src='https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSjkTN65Vf9dSCZNKG06m-4TsuTeutwGlq6bV6l80_eJlh8TNcQjiqvFA0PKPZrx3zPjW5QKjNZX4gcSjBjP1rm7SW5DUxY-7Xm7dQzmuO6X41etUBcuIkMcDYZAwVGV_uoA7yHEoZP&usqp=CAc '
+                        src={item.product.images[0]}
                         alt=''
                     />
                 </div>
@@ -23,14 +24,14 @@ const CartItem = () => {
                 <div className='space-y-2'>
 
                     <h1 className='font font-semibold text-lg'>
-                        Ram Colthing
+                        {item.product.seller?.businessDetails.businessName}
                     </h1>
 
                     <p className='text-sm'>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, quaerat!</p>
+                        {item.product.title}</p>
 
                     <p className='text-xs text-gray-600'>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Inventore, animi.</p>
+                        {item.quantity}</p>
 
                     <p><strong>quantity : </strong> 5</p>
 
@@ -63,7 +64,7 @@ const CartItem = () => {
 
                 <div className='pr-5'>
                     <p className='text-gray-700 font font-medium'>
-                        rs 799
+                        rs {item.sellingPrice}
                     </p>
                 </div>
             </div>
@@ -78,4 +79,4 @@ const CartItem = () => {
     )
 }
 
-export default CartItem
+export default CartItemCard

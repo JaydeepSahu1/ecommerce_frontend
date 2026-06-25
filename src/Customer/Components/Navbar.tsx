@@ -9,6 +9,7 @@ import CategorySheet from './CategorySheet';
 import zIndex from '@mui/material/styles/zIndex';
 import { mainCategory } from '../../Data/Category/maincatergory';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../State/Store';
 
 const Navbar = () => {
     const theme = useTheme();
@@ -17,6 +18,7 @@ const Navbar = () => {
     const [showCategorySheet, setShowCategorySheet] = useState(false);
 
     const navigate=useNavigate();
+    const{auth} = useAppSelector(store=>store)
 
     return (
         <>
@@ -57,14 +59,14 @@ const Navbar = () => {
                         </IconButton>
 
                         {
-                            false ? <Button 
+                            auth.isLoggedIn ? <Button 
                             onClick={()=>navigate("/account")}
                             className='flex item-center gap-2'>
                                 <Avatar
                                     sx={{ width: 29, height: 29 }}
                                     src='https://img.freepik.com/premium-vector/man-character_665280-46970.jpg' />
                                 <h1 className='font-semibold hidden lg:block'>
-                                    Jaydeep
+                                    {auth.user?.fullName}
                                 </h1>
                             </Button> : <Button
                             onClick={()=>navigate("/login")}

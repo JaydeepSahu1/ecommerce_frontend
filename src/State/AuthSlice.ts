@@ -81,14 +81,16 @@ interface AuthState {
   jwt: string | null,
   otpSent: boolean,
   isLoggedIn: boolean,
-  user: any | null
+  user: any | null,
+  loading:boolean
 }
 
 const initialState: AuthState = {
   jwt: null,
   otpSent: false,
   isLoggedIn: false,
-  user: null
+  user: null,
+  loading:false
 }
 
 const authSlice = createSlice({
@@ -96,6 +98,19 @@ const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+
+    builder.addCase(sendLoginSignupOtp.pending,(state)=>{
+      state.loading=true;
+    })
+
+    builder.addCase(sendLoginSignupOtp.fulfilled,(state)=>{
+      state.loading=false;
+      state.otpSent=true;
+    })
+
+     builder.addCase(sendLoginSignupOtp.rejected,(state)=>{
+      state.loading=false;
+    })
 
     builder.addCase(signin.fulfilled, (state, action) => {
       state.jwt = action.payload
@@ -110,6 +125,12 @@ const authSlice = createSlice({
     builder.addCase(fetchUserProfile.fulfilled,(state,action)=>{
       state.user = action.payload
       state.isLoggedIn = true
+    })
+
+    builder.addCase(logout.fulfilled,(state)=>{
+      state.jwt=null
+      state.isLoggedIn=false
+      state.user=null
     })
 
   }
